@@ -1,0 +1,30 @@
+明慧期刊:
+  参数:
+    category_id=1 (定义未知)
+    leibie_id=1 (类别1是明慧期刊、2是明慧特刊)
+    page=1 (可选)
+
+
+域名: http://qikan.minghui.org/
+
+
+明慧期刊页面: (/display.aspx?category_id=1&leibie_id=x&page=x)
+  div元素:
+    定义总页数: maxpage
+    指示当前页数: currentpage
+    列表容器: qikan_listing0
+      书元素: <li>
+        相对链接: <a href="/display.aspx?qikan_type_id=11182">
+        日期: annotation_over_cover_image
+        标题: annotation_over_cover_image_text
+
+
+明慧期刊某类型下所有书籍页面: (/display.aspx?qikan_type_id=xxxxx)
+  div元素定义同<明慧期刊页面>
+
+
+明慧期刊某书籍页面: (/qikan.aspx?id=xxxxxx)
+  div元素:
+    书标题: <div class="title"> -> <span id="lblTitle">
+    资源地址: <div class="htmlcontent"> -> <span id="lblHtmlCode"> -> <a href="资源url">
+    发稿日期: <div class="publish_date"> -> <span id="blPublishDate">

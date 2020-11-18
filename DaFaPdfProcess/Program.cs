@@ -1,0 +1,139 @@
+﻿using System;
+using System.IO;
+using System.Text;
+using PdfSharp;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
+
+
+namespace DaFaPdfProcess {
+	
+	public static class Program {
+
+		public const string TWO_IN_ONE = "2in1";
+		public const string FOUR_IN_ONE = "4in1";
+		public const string EXT = ".pdf";
+		
+		public static void Main ( string[] args ) {
+
+			if ( args.Length < 1 ) {
+				Log ( "pass file or directory." );
+				return;
+			}
+			
+			Encoding.RegisterProvider ( CodePagesEncodingProvider.Instance );
+
+			bool isFile = true;
+			
+			FileAttributes attr = File.GetAttributes( args[ 0 ] );
+
+			if ( ( attr & FileAttributes.Directory ) == FileAttributes.Directory ) {
+				isFile = false;
+			}
+
+			if ( isFile ) {
+				ConvertSideVersion ( args[ 0 ] );
+			}
+			else {
+				foreach ( var filePath in Directory.EnumerateFiles ( args[ 0 ] ) ) {
+					if ( Path.GetExtension ( filePath ).ToLower () == EXT ) {
+						ConvertSideVersion ( filePath );
+					}
+				}
+			}
+		}
+
+		// Support 2in1 and 4in1
+		public static void ConvertSideVersion ( string path ) {
+			if ( !File.Exists ( path ) ) {
+				return;
+			}
+			
+			if ( Path.GetExtension ( path ).ToLower () != EXT ) {
+				Log ( $"{path} not a pdf document." );
+				return;
+			}
+
+			bool is_2in1 = false;
+			string filename = null;
+			string ext      = null;
+			ext     = Path.GetExtension ( path );
+			filename = Path.GetFileNameWithoutExtension ( path );
+
+			if ( filename.Contains ( TWO_IN_ONE ) ) {
+				is_2in1 = true;
+			}
+			else {
+				if ( !filename.Contains ( FOUR_IN_ONE ) ) {
+					Log ( $"只支持2in1/4in1格式的文档 {path}" );
+					return;
+				}
+			}
+			
+			// var dfDoc = PdfReader.Open ( args[ 0 ] , PdfDocumentOpenMode.Import );
+
+			XGraphics gfx;
+			XRect     box;
+			XPdfForm  form = XPdfForm.FromFile ( path );
+			
+			PdfDocument outputDoc = new PdfDocument ();
+			outputDoc.Info.Title = form.Page.Owner.Info.Title;
+			
+			for ( int i = 0; i < form.PageCount; i++ ) {
+				// 奇数
+				if ( i % 2 != 0 ) {
+					// 右边页
+					form.PageIndex = form.PageCount - i - 1;
+					
+					PdfPage outPage = outputDoc.AddPage ();
+					outPage.Orientation = PageOrientation.Portrait;
+					
+					var    page   = form.Page;
+					double width  = is_2in1 ? page.Width * 1.35D : page.Width * 2;
+					double height = is_2in1 ? page.Height * 1.35D : page.Height * 2;
+					box = new XRect ( 0, 0, width, height );
+					
+					gfx = XGraphics.FromPdfPage ( outPage );
+					gfx.TranslateTransform ( is_2in1 ? -page.Width * 0.65D : -page.Width, 0 );
+					gfx.DrawImage ( form, box );
+					gfx.Dispose ();
+					
+					// Log ( $"save page: {form.PageNumber} to douDoc" );
+				}
+				else {
+					
+					// 左边页
+					form.PageIndex = i;
+					
+					PdfPage outPage = outputDoc.AddPage ();
+					outPage.Orientation = PageOrientation.Portrait;
+					
+					var    page   = form.Page;
+					double width  = is_2in1 ? page.Width * 1.35D : page.Width * 2;
+					double height = is_2in1 ? page.Height * 1.35D : page.Height * 2;
+					box = new XRect ( 0, 0, width, height );
+					
+					gfx = XGraphics.FromPdfPage ( outPage );
+					gfx.DrawImage ( form, box );
+					gfx.Dispose ();
+					
+					// Log ( $"save page: {form.PageNumber} to douDoc" );
+				}
+			}
+			
+			outputDoc.Save ( filename + ext );
+
+			if ( is_2in1 ) {
+				Log ( $"output {TWO_IN_ONE} {filename + ext}" );
+			}
+			else {
+				Log ( $"output {FOUR_IN_ONE} {filename + ext}" );
+			}
+		}
+
+		public static void Log ( string str ) {
+			Console.WriteLine ( str );
+		}
+		
+	}
+}

@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="MingHuiQiKanTool.fs" />
+        <Compile Include="Program.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AngleSharp" Version="1.0.0-alpha-844" />
+      <PackageReference Include="EasyConsoleCore" Version="1.0.2" />
+      <PackageReference Include="FSharp.Json" Version="0.3.7" />
+      <PackageReference Include="SharpZipLib" Version="1.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="AltoHttp, Version=1.0.7627.22258, Culture=neutral, PublicKeyToken=null">
+        <HintPath>libs\AltoHttp.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+</Project>

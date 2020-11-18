@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaFaPdfProcess", "DaFaPdfProcess\DaFaPdfProcess.csproj", "{A7BB0B08-5815-486C-9BAD-ED16F5ED7724}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FetchMinghuiRes", "FetchMinghuiRes\FetchMinghuiRes.fsproj", "{F92012C5-4EA7-4E80-A43E-C52B3B9C3F87}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A7BB0B08-5815-486C-9BAD-ED16F5ED7724}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7BB0B08-5815-486C-9BAD-ED16F5ED7724}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7BB0B08-5815-486C-9BAD-ED16F5ED7724}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7BB0B08-5815-486C-9BAD-ED16F5ED7724}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F92012C5-4EA7-4E80-A43E-C52B3B9C3F87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F92012C5-4EA7-4E80-A43E-C52B3B9C3F87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F92012C5-4EA7-4E80-A43E-C52B3B9C3F87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F92012C5-4EA7-4E80-A43E-C52B3B9C3F87}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
