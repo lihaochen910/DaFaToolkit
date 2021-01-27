@@ -20,45 +20,62 @@ namespace DaFaPdfProcess {
 		public static void Main ( string[] args ) {
 
 			if ( args.Length < 2 ) {
-				Log ( "input: [gb/big5] [pdf/pdfFolder]" );
+				Log ( "usage:" );
+				Log ( "\t [gb] [2in1/4in1] [pdf/pdfFolder]" );
+				Log ( "\t [big5] [pdf/pdfFolder]" );
 				return;
 			}
 			
 			Encoding.RegisterProvider ( CodePagesEncodingProvider.Instance );
-
-			bool isFile = true;
 			
-			FileAttributes attr = File.GetAttributes( args[ 1 ] );
+			// big5 branch
+			if ( args.Length == 2 ) {
+				bool isFile = true;
+			
+				FileAttributes attr = File.GetAttributes( args[ 1 ] );
 
-			if ( ( attr & FileAttributes.Directory ) == FileAttributes.Directory ) {
-				isFile = false;
-			}
-
-			Action < string, string > processFile = ( type, path ) => {
-				switch ( type ) {
-					case GB:
-						ConvertSideVersion ( path ); break;
-					case BIG5:
-						ConvertBig5Version ( path ); break;
-					default:
-						break;
+				if ( ( attr & FileAttributes.Directory ) == FileAttributes.Directory ) {
+					isFile = false;
 				}
-			};
-
-			if ( isFile ) {
-				processFile ( args[ 0 ], args[ 1 ] );
-			}
-			else {
-				foreach ( var filePath in Directory.EnumerateFiles ( args[ 1 ] ) ) {
-					if ( Path.GetExtension ( filePath ).ToLower () == EXT ) {
-						processFile ( args[ 0 ], filePath );
+				
+				if ( isFile ) {
+					ConvertBig5Version ( args[ 1 ] );
+				}
+				else {
+					foreach ( var filePath in Directory.EnumerateFiles ( args[ 1 ] ) ) {
+						if ( Path.GetExtension ( filePath ).ToLower () == EXT ) {
+							ConvertBig5Version ( filePath );
+						}
 					}
 				}
 			}
+			// gb branch
+			else if ( args.Length == 3 ) {
+				bool isFile = true;
+				bool is_2in1 = args[ 1 ].ToLower ().Equals ( TWO_IN_ONE );
+			
+				FileAttributes attr = File.GetAttributes( args[ 2 ] );
+
+				if ( ( attr & FileAttributes.Directory ) == FileAttributes.Directory ) {
+					isFile = false;
+				}
+				
+				if ( isFile ) {
+					ConvertSideVersion ( args[ 2 ], is_2in1 );
+				}
+				else {
+					foreach ( var filePath in Directory.EnumerateFiles ( args[ 2 ] ) ) {
+						if ( Path.GetExtension ( filePath ).ToLower () == EXT ) {
+							ConvertSideVersion ( filePath, is_2in1 );
+						}
+					}
+				}
+			}
+	
 		}
 
 		// Support 2in1 and 4in1
-		public static void ConvertSideVersion ( string path ) {
+		public static void ConvertSideVersion ( string path, bool is_2in1 ) {
 			if ( !File.Exists ( path ) ) {
 				return;
 			}
@@ -67,25 +84,22 @@ namespace DaFaPdfProcess {
 				Log ( $"{path} not a pdf document." );
 				return;
 			}
-
-			bool is_2in1 = false;
+			
 			string filename = null;
 			string ext      = null;
 			ext     = Path.GetExtension ( path );
 			filename = Path.GetFileNameWithoutExtension ( path );
 
-			if ( filename.Contains ( TWO_IN_ONE ) ) {
-				is_2in1 = true;
-			}
-			else {
-				if ( !filename.Contains ( FOUR_IN_ONE ) ) {
-					Log ( $"只支持2in1/4in1格式的文档 {path}" );
-					return;
-				}
-			}
+			// if ( filename.Contains ( TWO_IN_ONE ) ) {
+			// 	is_2in1 = true;
+			// }
+			// else {
+			// 	if ( !filename.Contains ( FOUR_IN_ONE ) ) {
+			// 		Log ( $"只支持2in1/4in1格式的文档 {path}" );
+			// 		return;
+			// 	}
+			// }
 			
-			// var dfDoc = PdfReader.Open ( args[ 0 ] , PdfDocumentOpenMode.Import );
-
 			XGraphics gfx;
 			XRect     box;
 			XPdfForm  form = XPdfForm.FromFile ( path );
